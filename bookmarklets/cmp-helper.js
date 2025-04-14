@@ -11,6 +11,26 @@
 
 	const CMPS = [
 		{
+			name: "Trust Commanders",
+			test: () => !!window.cact,
+			openWidget: () => cact('consentCenter.show'),
+			detectVendorID(callback) {
+				alert('☝️ I will open the CMP Widget for you.\nIn order to enable the iAdvize vendorID detection, please:\n\n  1. Go on the partners/vendors section in the Widget\n  2. Refuse/disable all vendors\n  3. ACCEPT ONLY the iAdvize vendor\n  4. Save / validate your consent');
+				cact('once', 'consent-updated', (event) => {
+					cact('consent.get', function(result) {
+						const vendorIDS = Object.keys(result.consent.vendors);
+						const vendorStates = Object.values(result.consent.vendors);
+						const candidates = vendorStates
+							.map((state, i) => ({status: state.status, id: vendorIDS[i]}))
+							.filter(vendor => vendor.status === 'on')
+							.map(vendor => vendor.id);
+						callback(candidates);
+					});
+				});
+				cact('consentCenter.show');
+			}
+		},
+		{
 			name: "Didomi",
 			test: () => !!window.Didomi,
 			openWidget: () => Didomi.preferences.show(),
@@ -36,26 +56,6 @@
 				axeptioSDK.on("cookies:complete", displayResult, {replay: false, once: true});
 				alert('☝️ I will open the CMP Widget automatically for you.\nIn order to enable the iAdvize vendorID detection, please:\n\n - click on **Accept all button** to enable the vendorID detection.');
 				axeptioSDK.openCookies();
-			}
-		},
-		{
-			name: "Trust Commanders",
-			test: () => !!window.cact,
-			openWidget: () => cact('consentCenter.show'),
-			detectVendorID(callback) {
-				alert('☝️ I will open the CMP Widget for you.\nIn order to enable the iAdvize vendorID detection, please:\n\n  1. Go on the partners/vendors section in the Widget\n  2. Refuse/disable all vendors\n  3. ACCEPT ONLY the iAdvize vendor\n  4. Save / validate your consent');
-				cact('once', 'consent-updated', (event) => {
-					cact('consent.get', function(result) {
-						const vendorIDS = Object.keys(result.consent.vendors);
-						const vendorStates = Object.values(result.consent.vendors);
-						const candidates = vendorStates
-							.map((state, i) => ({status: state.status, id: vendorIDS[i]}))
-							.filter(vendor => vendor.status === 'on')
-							.map(vendor => vendor.id);
-						callback(candidates);
-					});
-				});
-				cact('consentCenter.show');
 			}
 		},
 		{
