@@ -37,7 +37,7 @@
 			detectVendorID(callback) {
 				const VENDOR_ID_SUBSTRING = getVendorIDSubstring();
 				const candidates = Didomi.getVendors()
-				    .filter(vendor => (vendor.didomiId).toLowerCase().includes(VENDOR_ID_SUBSTRING))
+				    .filter(vendor => (vendor.didomiId+vendor.name).toLowerCase().includes(VENDOR_ID_SUBSTRING))
 				    .map(vendor => vendor.didomiId);
 				callback(candidates);
 			}
