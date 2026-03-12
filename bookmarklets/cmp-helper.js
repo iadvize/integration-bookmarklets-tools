@@ -64,10 +64,14 @@
 			openWidget: () => OneTrust.ToggleInfoDisplay(),
 			detectVendorID(callback) {
 				const VENDOR_ID_SUBSTRING = getVendorIDSubstring();
-				const groups = OneTrust.GetDomainData().Groups
-					.map(g => ({id: g.CustomGroupId, name: g.GroupName, description: g.GroupDescription}))
+				const groups = [
+                        ...OneTrust.GetDomainData().Groups
+                            .map(g => ({id: g.CustomGroupId, name: g.GroupName, description: g.GroupDescription})),
+                        ...OneTrust.GetDomainData().GeneralVendors
+                            .map(g => ({id: g.VendorCustomId, name: g.Name, description: g.Description}))
+                    ]
 					.filter(g => (g.name).toLowerCase().includes(VENDOR_ID_SUBSTRING) || (g.description).toLowerCase().includes(VENDOR_ID_SUBSTRING))
-					.map(g => `[${g.id}] ${g.name} (${g.description.substring(0, 25)})`);
+					.map(g => `Group or Vendor ID: "${g.id}" (Name: ${g.name}, Description: ${g.description.substring(0, 25)})`);
 				callback(groups);
 			}
 		}
